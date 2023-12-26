@@ -44,7 +44,7 @@ CATFRAMES=[
     sprites.CATSPRITE6,
     sprites.CATSPRITE7
 ]
-Cat=pygame.Rect(50,50,sprites.CATWIDTH,sprites.CATHEIGHT)
+Cat=pygame.Rect(50,50,sprites.CATWIDTH-30,sprites.CATHEIGHT-30)
 curcatframe=CATFRAMES[0]
 catframeindex=0
 catstate="run"
@@ -77,8 +77,9 @@ def drawgame():
     SCREEN.blit(sprites.GROUNDSPRITE,(Ground.x,Ground.y))
     obstacles.update(SCREEN,Cat,curscreen)
     catanimate()
+    SCREEN.fill("purple",Cat)
     collisioncheck()
-    SCREEN.blit(curcatframe,(Cat.x,Cat.y))
+    SCREEN.blit(curcatframe,(Cat.x-15,Cat.y-30))
     if user_text=="":
         finaltext=str(points)
     else:
@@ -95,7 +96,7 @@ def game():
     for event in pygame.event.get():  
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_SPACE and catstate!="jump":
-                catgravity= -8 
+                catgravity= -9
                 catstate="jump"
             if event.key==pygame.K_z:
                 curscreen="lose"

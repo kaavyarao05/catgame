@@ -19,22 +19,23 @@ LAYER1=270  #GROUND
 LAYER2=180  #WALL
 LAYER3=90   #ROOF
 
-onscreen=[]
+onscreen=[] #obstacles objects visible onscreen
+
 timer=0.0
 lastspawntime=0.0
-
-defaultx=WIDTH+200
 
 windowx2=270
 windowx1=60
 windowy=105
 
 class house:
-    def __init__(self) -> None:
+    def __init__(self,rect) -> None:
+        global standablerect
         self.randomize()
         self.type="house"
         self.sprite=sprites.HOUSESPRITE
         self.x=WIDTH
+        self.rect=rect
         self.y=12
     def randomize(self):
         match random.randint(1,4):
@@ -53,6 +54,7 @@ class house:
     def update(self,screen):
         global onscreen
         self.x-=speed2
+        self.rect.x-=speed2
         screen.blit(sprites.HOUSESPRITE,(self.x,self.y))
         screen.blit(self.leftwsprite,(self.x+windowx1,self.y+windowy))
         screen.blit(self.rightwsprite,(self.x+windowx2,self.y+windowy))
@@ -60,6 +62,7 @@ class house:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
     def reset(self,screen):
+        self.rect.x=WIDTH
         self.randomize()
         self.x=WIDTH
         self.y=12
@@ -87,14 +90,13 @@ Dog2Rect=pygame.Rect(WIDTH,LAYER1-sprites.DOGHEIGHT,sprites.DOGWIDTH,sprites.DOG
 dog1=dog(Dog1Rect)
 dog2=dog(Dog2Rect)
 
-
-hse=house()
+hserect1=pygame.Rect(WIDTH,163+12,sprites.HOUSEWIDTH,13)
+hse=house(hserect1)
 
 LAYER1OBS=[dog1,dog2]
 LAYER2OBS=[hse]
 
-
-onscreen=[]
+standablerect=[hserect1]
 
 speed1=5
 speed2=4
