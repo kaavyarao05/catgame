@@ -19,7 +19,12 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Catgame")
 FPS=60
 curscreen="menu"
+
 points=0
+pointsinterval=500  #time interval to update points in milliseconds
+lastpointinterval=0
+
+hitbox=True
 
 #=======================MENU===============================
 BASE_FONT = pygame.font.Font(None, 32) 
@@ -76,21 +81,22 @@ def drawgame():
     SCREEN.fill((255,255,255))
     SCREEN.blit(sprites.GROUNDSPRITE,(Ground.x,Ground.y))
     obstacles.update(SCREEN,Cat,curscreen)
+    if hitbox==True:
+        SCREEN.fill("purple",Cat)
     catanimate()
-    SCREEN.fill("purple",Cat)
     collisioncheck()
     SCREEN.blit(curcatframe,(Cat.x-15,Cat.y-30))
     if user_text=="":
         finaltext=str(points)
     else:
         finaltext=user_text+" : "+str(points)
-
     text_surface = BASE_FONT.render(finaltext, False, (0,0,0)) 
     SCREEN.blit(text_surface, (5, 5)) 
     pygame.display.update()
 
 def game():
-    global catgravity,catstate,curscreen
+    global catgravity,catstate,curscreen,points,lastpointinterval
+    timer=pygame.time.get_ticks()
     clock.tick(FPS)
     drawgame()
     for event in pygame.event.get():  
@@ -106,6 +112,10 @@ def game():
             pygame.quit()
             pdb.set_trace()
         
+    if timer-lastpointinterval>pointsinterval:
+        lastpointinterval=timer
+        points+=1
+
     catgravity+=0.3
     Cat.y+=catgravity
     if Cat.bottom>=Ground.y:
@@ -113,7 +123,7 @@ def game():
         catstate="run"
    
 def menu():
-    global user_text,curscreen
+    global user_text,curscreen,hitbox
     clock.tick(FPS)
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
@@ -124,6 +134,9 @@ def menu():
                 user_text = user_text[:-1] 
             elif event.key==pygame.K_RETURN:
                 curscreen="game"
+            elif event.key==pygame.K_SPACE:
+                hitbox=not hitbox
+                obstacles.hitbox=hitbox
             elif len(user_text)<10: 
                 user_text += event.unicode
     SCREEN.fill((255, 255, 255))     

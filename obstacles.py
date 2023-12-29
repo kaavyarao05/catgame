@@ -28,6 +28,8 @@ windowx2=270
 windowx1=60
 windowy=105
 
+hitbox=True
+
 class house:
     def __init__(self,rect) -> None:
         global standablerect
@@ -69,26 +71,33 @@ class house:
         screen.blit(self.sprite,(self.x,self.y))
 
 class dog:
-    def __init__(self,rect) -> None:
+    def __init__(self) -> None:
+        self.xoffset=15
+        self.yoffset=20
         self.type="dog"
-        self.rect=rect
+        self.rect=pygame.Rect(
+            WIDTH,
+            LAYER1-sprites.DOGHEIGHT,
+            sprites.DOGWIDTH-self.xoffset,
+            sprites.DOGHEIGHT-self.yoffset
+            )
         self.sprite=sprites.DOGSPRITE
     def reset(self,screen):
         self.rect.left=WIDTH
         self.rect.bottom=LAYER1
-        screen.blit(self.sprite,(self.rect.x,self.rect.y))
+        screen.blit(self.sprite,(self.rect.x-self.xoffset,self.rect.y-self.yoffset))
     def update(self,screen):
         global onscreen
+        if hitbox==True:
+            screen.fill("purple",self.rect)
         self.rect.x-=speed1
-        screen.blit(self.sprite,(self.rect.x,self.rect.y))
+        screen.blit(self.sprite,(self.rect.x-self.xoffset,self.rect.y-self.yoffset))
         if self.rect.right<=0:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
 
-Dog1Rect=pygame.Rect(WIDTH,LAYER1-sprites.DOGHEIGHT,sprites.DOGWIDTH,sprites.DOGHEIGHT)
-Dog2Rect=pygame.Rect(WIDTH,LAYER1-sprites.DOGHEIGHT,sprites.DOGWIDTH,sprites.DOGHEIGHT)
-dog1=dog(Dog1Rect)
-dog2=dog(Dog2Rect)
+dog1=dog()
+dog2=dog()
 
 hserect1=pygame.Rect(WIDTH,163+12,sprites.HOUSEWIDTH,13)
 hse=house(hserect1)
