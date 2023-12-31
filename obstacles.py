@@ -90,7 +90,7 @@ class dog:
         global onscreen
         if hitbox==True:
             screen.fill("purple",self.rect)
-        self.rect.x-=speed1
+        self.rect.x-=speed1 #self.rect.x=self.rect.x-speed1    rect-=speed      rect=rect-speed
         screen.blit(self.sprite,(self.rect.x-self.xoffset,self.rect.y-self.yoffset))
         if self.rect.right<=0:
             onscreen.pop(onscreen.index(self))

@@ -1,5 +1,5 @@
 import pygame,os,pdb,sys
-import sprites,obstacles
+import sprites,obstacles,sqlconn
 
 '''
 sprites
@@ -149,13 +149,15 @@ def menu():
 
 def restart():
     global curscreen,points
-    curscreen="game"
+    if user_text!="":
+        sqlconn.update(user_text,points)
+    curscreen="menu"
     obstacles.restart(SCREEN)
     points=0
     Cat.y=Ground.y+1
 
 def lose():
-    SCREEN.fill((255,255,255))
+    SCREEN.fill((191,255,128))
     lose=BASE_FONT.render("YOU LOSE",False,(0,0,0))
     SCREEN.blit(lose,(WIDTH/2,HEIGHT/2))
     pygame.display.update()
@@ -179,5 +181,7 @@ def start():
             case "menu":
                 menu()
 
+
 if __name__=="__main__":
     start()
+
