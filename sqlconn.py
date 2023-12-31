@@ -7,7 +7,4 @@ def update(name,points):
     conn.commit()
     cursor.execute('''SELECT * FROM leaderboard;''')
     rows=cursor.fetchall()
-    print("update")
-    for i in rows:
-        print(i)
     conn.close()
