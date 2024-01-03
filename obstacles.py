@@ -20,6 +20,7 @@ LAYER2=180  #WALL
 LAYER3=90   #ROOF
 
 onscreen=[] #obstacles objects visible onscreen
+standableobjlist=[]
 
 timer=0.0
 lastspawntime=0.0
@@ -31,13 +32,14 @@ windowy=105
 hitbox=True
 
 class house:
-    def __init__(self,rect) -> None:
+    def __init__(self,rect:pygame.Rect,roof:pygame.Rect) -> None:
         global standablerect
         self.randomize()
         self.type="house"
         self.sprite=sprites.HOUSESPRITE
         self.x=WIDTH
         self.rect=rect
+        self.roof=roof
         self.y=12
     def randomize(self):
         match random.randint(1,4):
@@ -57,6 +59,7 @@ class house:
         global onscreen
         self.x-=speed2
         self.rect.x-=speed2
+        self.roof.x-=speed2
         screen.blit(sprites.HOUSESPRITE,(self.x,self.y))
         screen.blit(self.leftwsprite,(self.x+windowx1,self.y+windowy))
         screen.blit(self.rightwsprite,(self.x+windowx2,self.y+windowy))
@@ -64,6 +67,7 @@ class house:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
     def reset(self,screen):
+        self.roof.x=WIDTH
         self.rect.x=WIDTH
         self.randomize()
         self.x=WIDTH
@@ -99,13 +103,15 @@ class dog:
 dog1=dog()
 dog2=dog()
 
-hserect1=pygame.Rect(WIDTH,163+12,sprites.HOUSEWIDTH,13)
-hse=house(hserect1)
+hserect1=pygame.Rect(WIDTH,175,sprites.HOUSEWIDTH,13)
+hserectroof=pygame.Rect(WIDTH,84,sprites.HOUSEWIDTH,13)
+hse=house(rect=hserect1,roof=hserectroof)
 
 LAYER1OBS=[dog1,dog2]
 LAYER2OBS=[hse]
+LAYER3OBS=[]
 
-standablerect=[hserect1]
+standablerect=[hserect1,hserectroof]
 
 speed1=5
 speed2=4
@@ -113,19 +119,19 @@ diff=3
 
 
 def spawn(screen):
+    layerlist=LAYER1OBS
     match random.randint(1,2):
         case 1:
-            new=LAYER1OBS[random.randint(0,len(LAYER1OBS)-1)]
-            if not new in onscreen:
-                new.reset(screen)
-                onscreen.append(new)
+            layerlist=LAYER1OBS
         case 2:
-            new=LAYER2OBS[random.randint(0,len(LAYER2OBS)-1)]
-            if not new in onscreen:
-                new.reset(screen)
-                onscreen.append(new)
+            layerlist=LAYER2OBS
         case 3: 
-            pass
+            layerlist=LAYER3OBS
+    new=layerlist[random.randint(0,len(layerlist)-1)]
+    if not new in onscreen:
+        new.reset(screen)
+        onscreen.append(new)
+
 
 def restart(screen):
     for obj in onscreen:
@@ -139,6 +145,8 @@ def update(SCREEN,Cat,curscreen):
             lastspawntime=timer
             spawn(SCREEN)
     for obj in onscreen:
+        obj.update(SCREEN)
+    for obj in standableobjlist:
         obj.update(SCREEN)
 
     

@@ -69,13 +69,17 @@ def catanimate():
             curcatframe=CATFRAMES[0]
 
 def collisioncheck():
-    global curscreen
+    global curscreen,catgravity,catstate
     rectlist=[]
     for obj in obstacles.onscreen:
         if obj.type!="house":
             rectlist.append(obj.rect)
     if (pygame.Rect.collidelistall(Cat,rectlist))!=[]:
         curscreen="lose"
+    for rect in obstacles.standablerect:
+        if pygame.Rect.colliderect(Cat,rect) and catgravity>0:
+            catgravity=0
+            catstate="run"
 
 def drawgame():
     SCREEN.fill((255,255,255))
@@ -118,6 +122,7 @@ def game():
 
     catgravity+=0.3
     Cat.y+=catgravity
+
     if Cat.bottom>=Ground.y:
         Cat.bottom=Ground.y
         catstate="run"
