@@ -14,6 +14,12 @@ DOGSPRITE=pygame.image.load(os.path.join('assets',"dog.png"))
 DOGWIDTH=101
 DOGHEIGHT=80
 
+EAGLESPRITE=pygame.image.load(os.path.join('assets',"eagle.png"))
+
+ANGRYCATSPRITE=pygame.image.load(os.path.join('assets',"angrycat.png"))
+
+MENUSPRITE=pygame.image.load(os.path.join('assets','menu.jpg'))
+
 HOUSESPRITE=pygame.image.load(os.path.join('assets',"house.png"))
 HOUSEWIDTH=442
 HOUSEHEIGHT=257

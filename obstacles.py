@@ -32,13 +32,14 @@ windowy=105
 hitbox=True
 
 class house:
-    def __init__(self,rect:pygame.Rect,roof:pygame.Rect) -> None:
+    def __init__(self,rect1:pygame.Rect,roof:pygame.Rect,rect2:pygame.Rect) -> None:
         global standablerect
         self.randomize()
         self.type="house"
         self.sprite=sprites.HOUSESPRITE
         self.x=WIDTH
-        self.rect=rect
+        self.rect1=rect1
+        self.rect2=rect2
         self.roof=roof
         self.y=12
     def randomize(self):
@@ -58,7 +59,8 @@ class house:
     def update(self,screen):
         global onscreen
         self.x-=speed2
-        self.rect.x-=speed2
+        self.rect1.x-=speed2
+        self.rect2.x-=speed2
         self.roof.x-=speed2
         screen.blit(sprites.HOUSESPRITE,(self.x,self.y))
         screen.blit(self.leftwsprite,(self.x+windowx1,self.y+windowy))
@@ -68,7 +70,8 @@ class house:
             self.reset(screen)
     def reset(self,screen):
         self.roof.x=WIDTH
-        self.rect.x=WIDTH
+        self.rect1.x=WIDTH
+        self.rect2.x=WIDTH+270
         self.randomize()
         self.x=WIDTH
         self.y=12
@@ -103,15 +106,16 @@ class dog:
 dog1=dog()
 dog2=dog()
 
-hserect1=pygame.Rect(WIDTH,175,sprites.HOUSEWIDTH,13)
+hserect1=pygame.Rect(WIDTH,175,173,13)
+hserect2=pygame.Rect(WIDTH+270,175,173,13)
 hserectroof=pygame.Rect(WIDTH,84,sprites.HOUSEWIDTH,13)
-hse=house(rect=hserect1,roof=hserectroof)
+hse=house(rect1=hserect1,roof=hserectroof,rect2=hserect2)
 
 LAYER1OBS=[dog1,dog2]
 LAYER2OBS=[hse]
 LAYER3OBS=[]
 
-standablerect=[hserect1,hserectroof]
+standablerect=[hserect1,hserectroof,hserect2]
 
 speed1=5
 speed2=4
