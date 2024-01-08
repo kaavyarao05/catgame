@@ -158,7 +158,7 @@ def restart():
     Cat.y=Ground.y+1
 
 def lose():
-    SCREEN.blit(sprites.LOSESPRITE,(0,0))
+    SCREEN.blit(sprites.LOSESPRITE,(-20,-50))
     lose=BASE_FONT.render("YOU LOSE",False,(0,0,0))
     SCREEN.blit(lose,(WIDTH/2,HEIGHT/2))
     pygame.display.update()
