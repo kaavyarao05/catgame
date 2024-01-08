@@ -159,8 +159,8 @@ def restart():
 
 def lose():
     SCREEN.blit(sprites.LOSESPRITE,(-20,-50))
-    lose=BASE_FONT.render("YOU LOSE",False,(0,0,0))
-    SCREEN.blit(lose,(WIDTH/2,HEIGHT/2))
+    lose=BASE_FONT.render("YOU LOSE",False,(255,255,255))
+    SCREEN.blit(lose,(WIDTH/4-60,HEIGHT/4+20))
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:

@@ -19,7 +19,8 @@ EAGLESPRITE=pygame.image.load(os.path.join('assets',"eagle.png"))
 ANGRYCATSPRITE=pygame.image.load(os.path.join('assets',"angrycat.png"))
 
 MENUSPRITE=pygame.image.load(os.path.join('assets','menu.jpg'))
-LOSESPRITE=pygame.image.load(os.path.join('assets','catcrying.jpg'))
+LOSE=pygame.image.load(os.path.join('assets','catcrying.jpg'))
+LOSESPRITE=pygame.transform.scale(LOSE,(450,450)) 
 
 HOUSESPRITE=pygame.image.load(os.path.join('assets',"house.png"))
 HOUSEWIDTH=442
