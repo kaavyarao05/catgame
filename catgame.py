@@ -29,10 +29,7 @@ hitbox=True
 #=======================MENU===============================
 BASE_FONT = pygame.font.Font(None, 32) 
 user_text = '' 
-INPUT_RECT = pygame.Rect(200, 200, 140, 32) 
-COLOUR_ACTIVE = pygame.Color('lightskyblue3') 
-COLOUR_PASSIVE = pygame.Color('chartreuse4') 
-color = COLOUR_PASSIVE
+INPUT_RECT = pygame.Rect(20, 80, 140, 32) 
 #=========================================================
 
 Ground=pygame.Rect(0,HEIGHT-sprites.GROUNDHEIGHT,sprites.GROUNDWIDTH,sprites.GROUNDHEIGHT)
@@ -144,10 +141,9 @@ def menu():
                 obstacles.hitbox=hitbox
             elif len(user_text)<10: 
                 user_text += event.unicode
-    SCREEN.fill((255, 255, 255))     
-    pygame.draw.rect(SCREEN,("purple"), INPUT_RECT) 
-    
-    text_surface = BASE_FONT.render(user_text, True, (255, 255, 255)) 
+
+    SCREEN.blit(sprites.MENUSPRITE,(0,0)) 
+    text_surface = BASE_FONT.render(user_text, True, (78,105,111)) 
     SCREEN.blit(text_surface, (INPUT_RECT.x+5, INPUT_RECT.y+5)) 
     INPUT_RECT.w = max(100, text_surface.get_width()+10) 
     pygame.display.flip() 
