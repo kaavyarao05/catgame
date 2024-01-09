@@ -74,8 +74,7 @@ class house:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
     def reset(self,screen):
-        if self.cathere:
-            self.cat.x=self.x+325
+        self.cat.x=WIDTH+325
         self.roof.x=WIDTH
         self.rect1.x=WIDTH
         self.rect2.x=WIDTH+270

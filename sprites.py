@@ -35,7 +35,8 @@ OBSTACLES={
     }
 }
 
-MENUSPRITE=pygame.image.load(os.path.join('assets','menu.jpg'))
+MENUSPRITE=pygame.image.load(os.path.join('assets','menu.png'))
+LEADERBOARDSPRITE=pygame.image.load(os.path.join('assets','leaderboard.png'))
 LOSE=pygame.image.load(os.path.join('assets','catcrying.jpg'))
 LOSESPRITE=pygame.transform.scale(LOSE,(450,450)) 
 

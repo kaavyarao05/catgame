@@ -149,26 +149,58 @@ def menu():
                 user_text += event.unicode
 
     SCREEN.blit(sprites.MENUSPRITE,(0,0)) 
-    text_surface = BASE_FONT.render(user_text, True, (78,105,111)) 
+    text_surface = BASE_FONT.render(user_text, False, (78,105,111)) 
     SCREEN.blit(text_surface, (INPUT_RECT.x+5, INPUT_RECT.y+5)) 
     INPUT_RECT.w = max(100, text_surface.get_width()+10) 
     pygame.display.flip() 
 
 def restart():
     global curscreen,points
-    if user_text!="":
-        sqlconn.update(user_text,points)
     curscreen="menu"
     obstacles.restart(SCREEN)
     points=0
     Cat.y=Ground.y+1
 
 def lose():
+    global curscreen
+    if user_text!="":
+        sqlconn.update(user_text,points)
     SCREEN.blit(sprites.LOSESPRITE,(-20,-50))
+    enter=BASE_FONT.render("[ENTER]: Retry",False,(255,255,255))
+    space=BASE_FONT.render("[SPACE]: Leaderboard",False,(255,255,255))
     lose=BASE_FONT.render("YOU LOSE",False,(255,255,255))
     total=BASE_FONT.render("TOTAL: "+str(points),False,(255,255,255))
-    SCREEN.blit(lose,(WIDTH/4-60,HEIGHT/4+20))
-    SCREEN.blit(total,(WIDTH/4-50,HEIGHT/4+50))
+    SCREEN.blit(lose,(WIDTH/4-60,10))
+    SCREEN.blit(total,(WIDTH/4-50,50))
+    SCREEN.blit(enter,(WIDTH/4-80,80))
+    SCREEN.blit(space,(WIDTH/4-80,110))
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pyquit()
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_SPACE:
+                sqlconn.recieve()
+                curscreen="leaderboard"
+            if event.key==pygame.K_RETURN:
+                restart()
+
+
+def leaderboard():
+    clock.tick(FPS)
+    onetext=BASE_FONT.render((sqlconn.output[0][0]),False,(78,105,111))
+    twotext=BASE_FONT.render((sqlconn.output[1][0]),False,(78,105,111))
+    threetext=BASE_FONT.render((sqlconn.output[2][0]),False,(78,105,111))
+    onescore=BASE_FONT.render(str(sqlconn.output[0][1]),False,(78,105,111))
+    twoscore=BASE_FONT.render(str(sqlconn.output[1][1]),False,(78,105,111))
+    threescore=BASE_FONT.render(str(sqlconn.output[2][1]),False,(78,105,111))
+    SCREEN.blit(sprites.LEADERBOARDSPRITE,(0,0))
+    SCREEN.blit(onetext,(125,85))
+    SCREEN.blit(twotext,(125,165))
+    SCREEN.blit(threetext,(125,245))
+    SCREEN.blit(onescore,(275,85))
+    SCREEN.blit(twoscore,(275,165))
+    SCREEN.blit(threescore,(275,245))
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -187,6 +219,8 @@ def start():
                 lose()
             case "menu":
                 menu()
+            case "leaderboard":
+                leaderboard()
 
 if __name__=="__main__":
     start()

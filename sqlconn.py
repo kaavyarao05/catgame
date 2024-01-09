@@ -4,9 +4,13 @@ conn=sqlite3.connect('leaderboard.db')
 cursor=conn.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS leaderboard (username VARCHAR(10),score INT);")
 cursor.execute("DELETE FROM leaderboard;")
+cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
+cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
+cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
 conn.commit()
 conn.close()
 
+output=[("",0),("",0),("",0)]
 
 def update(name,points):
     conn=sqlite3.connect('leaderboard.db')
@@ -16,14 +20,28 @@ def update(name,points):
     rows=cursor.fetchall()
     for i in rows:
         if i[0]==name:
-            cursor.execute("UPDATE leaderboard SET score={} WHERE username='{}'".format(points,name))
+            if i[1]<points:
+                cursor.execute("UPDATE leaderboard SET score={} WHERE username='{}'".format(points,name))
             break
     else:
         cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('{}',{});'''.format(name,points))
     conn.commit()
-    
-    cursor.execute('''SELECT * FROM leaderboard;''')
-    Rows=cursor.fetchall()
-    for i in Rows:
-        print(i)
+    conn.close()
+
+def sort(rows):
+    for i in range(len(rows)):
+        for j in range(len(rows)-1,i,-1):
+            if rows[j][1]>rows[j-1][1]:
+                rows[j],rows[j-1]=rows[j-1],rows[j]
+    return rows
+
+
+def recieve():
+    global output
+    conn=sqlite3.connect('leaderboard.db')
+    cursor=conn.cursor()
+    conn.commit()
+    cursor.execute('''SELECT * FROM leaderboard ORDER BY score;''')
+    rows=cursor.fetchall()
+    output=sort(rows)
     conn.close()
