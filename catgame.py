@@ -139,6 +139,10 @@ def menu():
             elif event.key==pygame.K_SPACE:
                 hitbox=not hitbox
                 obstacles.hitbox=hitbox
+            elif event.key==pygame.K_DELETE:
+                pass
+            elif event.key==pygame.K_TAB:
+                pass
             elif len(user_text)<10: 
                 user_text += event.unicode
 
@@ -160,7 +164,9 @@ def restart():
 def lose():
     SCREEN.blit(sprites.LOSESPRITE,(-20,-50))
     lose=BASE_FONT.render("YOU LOSE",False,(255,255,255))
+    total=BASE_FONT.render("TOTAL: "+str(points),False,(255,255,255))
     SCREEN.blit(lose,(WIDTH/4-60,HEIGHT/4+20))
+    SCREEN.blit(total,(WIDTH/4-50,HEIGHT/4+50))
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:

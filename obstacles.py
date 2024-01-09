@@ -77,21 +77,22 @@ class house:
         self.y=12
         screen.blit(self.sprite,(self.x,self.y))
 
-class dog:
-    def __init__(self) -> None:
+class obstacle:
+    def __init__(self,type,layer) -> None:
         self.xoffset=15
         self.yoffset=20
-        self.type="dog"
+        self.type=type
+        self.layer=layer
         self.rect=pygame.Rect(
             WIDTH,
-            LAYER1-sprites.DOGHEIGHT,
-            sprites.DOGWIDTH-self.xoffset,
-            sprites.DOGHEIGHT-self.yoffset
+            layer-sprites.OBSTACLES[type]["height"],
+            sprites.OBSTACLES[type]["width"]-self.xoffset,
+            sprites.OBSTACLES[type]["height"]-self.yoffset
             )
-        self.sprite=sprites.DOGSPRITE
+        self.sprite=sprites.OBSTACLES[type]["sprite"]
     def reset(self,screen):
         self.rect.left=WIDTH
-        self.rect.bottom=LAYER1
+        self.rect.bottom=self.layer
         screen.blit(self.sprite,(self.rect.x-self.xoffset,self.rect.y-self.yoffset))
     def update(self,screen):
         global onscreen
@@ -103,28 +104,34 @@ class dog:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
 
-dog1=dog()
-dog2=dog()
+dog1=obstacle("dog",LAYER1)
+dog2=obstacle("dog",LAYER1)
 
-hserect1=pygame.Rect(WIDTH,175,173,13)
-hserect2=pygame.Rect(WIDTH+270,175,173,13)
+eagle1=obstacle("eagle",LAYER3)
+eagle2=obstacle("eagle",LAYER3)
+
+hserect1=pygame.Rect(WIDTH,175,173,1)
+hserect2=pygame.Rect(WIDTH+270,175,173,1)
 hserectroof=pygame.Rect(WIDTH,84,sprites.HOUSEWIDTH,13)
 hse=house(rect1=hserect1,roof=hserectroof,rect2=hserect2)
 
 LAYER1OBS=[dog1,dog2]
 LAYER2OBS=[hse]
-LAYER3OBS=[]
+LAYER3OBS=[eagle1,eagle2]
 
 standablerect=[hserect1,hserectroof,hserect2]
 
 speed1=5
 speed2=4
 diff=3
+standablefreq=2
 
+def housespawn(SCREEN):
+    pass
 
 def spawn(screen):
     layerlist=LAYER1OBS
-    match random.randint(1,2):
+    match random.randint(1,3):
         case 1:
             layerlist=LAYER1OBS
         case 2:
@@ -150,6 +157,8 @@ def update(SCREEN,Cat,curscreen):
             spawn(SCREEN)
     for obj in onscreen:
         obj.update(SCREEN)
+    if len(standableobjlist)<standablefreq:
+        pass
     for obj in standableobjlist:
         obj.update(SCREEN)
 

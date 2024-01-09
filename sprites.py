@@ -15,8 +15,30 @@ DOGWIDTH=101
 DOGHEIGHT=80
 
 EAGLESPRITE=pygame.image.load(os.path.join('assets',"eagle.png"))
+EAGLEHEIGHT=90
+EAGLEWIDTH=90
 
 ANGRYCATSPRITE=pygame.image.load(os.path.join('assets',"angrycat.png"))
+ANGRYCATHEIGHT=47
+ANGRYCATWIDTH=97
+
+OBSTACLES={
+    "dog":{
+        "sprite":DOGSPRITE,
+        "height":DOGHEIGHT,
+        "width":DOGWIDTH
+    },
+    "cat":{
+        "sprite":ANGRYCATSPRITE,
+        "height":ANGRYCATHEIGHT,
+        "width":ANGRYCATWIDTH
+    },
+    "eagle":{
+        "sprite":EAGLESPRITE,
+        "height":EAGLEHEIGHT,
+        "width":EAGLEWIDTH
+    }
+}
 
 MENUSPRITE=pygame.image.load(os.path.join('assets','menu.jpg'))
 LOSE=pygame.image.load(os.path.join('assets','catcrying.jpg'))
