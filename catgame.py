@@ -1,16 +1,6 @@
 import pygame,os,pdb,sys
 import sprites,obstacles,sqlconn
 
-'''
-sprites
-stores sprites and their height and width
-
-obstacles
-restart() - restarts position of obstacles
-update() - updates pos of obstacles, adds more if there arent enough on screen
-
-'''
-
 pygame.init()
 WIDTH=400
 HEIGHT=300
@@ -21,10 +11,15 @@ FPS=60
 curscreen="menu"
 
 points=0
-pointsinterval=500  #time interval to update points in milliseconds
+pointsinterval=250  #time interval to update points in milliseconds
 lastpointinterval=0
+downclickinterval=0
 
 hitbox=True
+downclicked=False
+
+Ground=pygame.Rect(0,HEIGHT-sprites.GROUNDHEIGHT,sprites.GROUNDWIDTH,sprites.GROUNDHEIGHT)
+obstaclearray=[]
 
 #=======================MENU===============================
 BASE_FONT = pygame.font.Font(None, 32) 
@@ -32,9 +27,7 @@ user_text = ''
 INPUT_RECT = pygame.Rect(20, 80, 140, 32) 
 #=========================================================
 
-Ground=pygame.Rect(0,HEIGHT-sprites.GROUNDHEIGHT,sprites.GROUNDWIDTH,sprites.GROUNDHEIGHT)
-#Wall=pygame.Rect(500,)
-obstaclearray=[]
+
 
 #==========================CAT===========================
 CATFRAMES=[
@@ -54,6 +47,11 @@ catstate="run"
 catgravity=0
 #========================================================
 
+def pyquit():
+    pygame.quit()
+    pdb.set_trace()
+    quit()
+
 def catanimate():
     match catstate:
         case "run":
@@ -65,25 +63,26 @@ def catanimate():
         case "jump":
             curcatframe=CATFRAMES[0]
 
-def collisioncheck():
-    global curscreen,catgravity,catstate
-    rectlist=[]
-    for obj in obstacles.onscreen:
-        if obj.type!="house":
-            rectlist.append(obj.rect)
-    if (pygame.Rect.collidelistall(Cat,rectlist))!=[]:
-        curscreen="lose"
+def rectbelow():
+    global catstate,catgravity
     for rect in obstacles.standablerect:
         if pygame.Rect.colliderect(Cat,rect) and catgravity>0:
             catgravity=0
             catstate="run"
 
+def collisioncheck():
+    global curscreen,catgravity
+    if (pygame.Rect.collidelistall(Cat,obstacles.objrectlist))!=[]:
+        curscreen="lose"
+    if not downclicked:
+        rectbelow()
+
 def drawgame():
     SCREEN.fill((255,255,255))
     SCREEN.blit(sprites.GROUNDSPRITE,(Ground.x,Ground.y))
-    obstacles.update(SCREEN,Cat,curscreen)
+    obstacles.update(SCREEN)
     if hitbox==True:
-        SCREEN.fill("purple",Cat)
+        SCREEN.fill("green",Cat)
     catanimate()
     collisioncheck()
     SCREEN.blit(curcatframe,(Cat.x-15,Cat.y-30))
@@ -96,23 +95,27 @@ def drawgame():
     pygame.display.update()
 
 def game():
-    global catgravity,catstate,curscreen,points,lastpointinterval
+    global catgravity,catstate,curscreen,points,lastpointinterval,downclicked,downclickinterval
     timer=pygame.time.get_ticks()
     clock.tick(FPS)
     drawgame()
     for event in pygame.event.get():  
         if event.type==pygame.KEYDOWN:
-            if event.key==pygame.K_SPACE and catstate!="jump":
+            if (event.key==pygame.K_SPACE or event.key==pygame.K_UP) and catstate!="jump":
                 catgravity= -9
                 catstate="jump"
-            if event.key==pygame.K_z:
-                curscreen="lose"
-            if event.key==pygame.K_x:
-                print(obstacles.onscreen)
+            if event.key==pygame.K_DOWN and not downclicked:
+                catgravity+=3
+                downclickinterval=timer
+                downclicked=True
         if event.type == pygame.QUIT:
-            pygame.quit()
-            pdb.set_trace()
-        
+            pyquit()
+    
+    if downclicked:
+        if timer-downclickinterval>250:
+            downclicked=False
+    
+
     if timer-lastpointinterval>pointsinterval:
         lastpointinterval=timer
         points+=1
@@ -129,8 +132,7 @@ def menu():
     clock.tick(FPS)
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
-            pygame.quit() 
-            pdb.set_trace()    
+            pyquit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:  
                 user_text = user_text[:-1] 
@@ -170,12 +172,10 @@ def lose():
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
-            pygame.quit()
-            pdb.set_trace()
+            pyquit()
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_RETURN:
                 restart()
-
 
 def start():
     clock.tick(FPS)
@@ -188,7 +188,5 @@ def start():
             case "menu":
                 menu()
 
-
 if __name__=="__main__":
     start()
-

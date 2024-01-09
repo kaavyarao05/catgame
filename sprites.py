@@ -28,11 +28,6 @@ OBSTACLES={
         "height":DOGHEIGHT,
         "width":DOGWIDTH
     },
-    "cat":{
-        "sprite":ANGRYCATSPRITE,
-        "height":ANGRYCATHEIGHT,
-        "width":ANGRYCATWIDTH
-    },
     "eagle":{
         "sprite":EAGLESPRITE,
         "height":EAGLEHEIGHT,
