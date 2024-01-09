@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <head>
     <style>
-        table,td,th {
-            border:1px solid;
-            border-collapse: collapse;
+        body{
+            background-color: rgb(144, 169, 130);
         }
         td,th{
-            padding: 10px;
-            width: 70px;
+            padding: 20px;
+            width: 200px;
             text-align: center;
+            font-style: italic;
+            font-size: 1.5em;
+        }
+        th{
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            border-bottom: 1px solid black;
         }
         table{
+            border: 2px solid;
             margin-left: auto;
-            margin-right: auto;    
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.116);
+            border-radius: 70px 10px;
+        }
+        #one{
+            font-size: 1.2em;
+            font-weight:600;
         }
     </style>
     <script src="getdata.js"></script>
@@ -24,23 +36,23 @@
             <th>Score</th>
         </thead>
         <tbody>
-            <tr id="1">
+            <tr id="one">
                 <td class="name">name1</td>
                 <td class="score">score1</td>
             </tr>
-            <tr id="2">
+            <tr id="two">
                 <td class="name">name2</td>
                 <td class="score">score2</td>
             </tr>
-            <tr id="3">
+            <tr id="three">
                 <td class="name">name3</td>
                 <td class="score">score3</td>
             </tr>
-            <tr id="4">
+            <tr id="four">
                 <td class="name">name4</td>
                 <td class="score">score4</td>
             </tr>
-            <tr id="5">
+            <tr id="five">
                 <td class="name">name5</td>
                 <td class="score">score5</td>
             </tr>
