@@ -49,6 +49,11 @@ WINDOWCLOSEDSPRITE=pygame.image.load(os.path.join('assets',"windowclosed.png"))
 WINDOWWIDTH=101
 WINDOWHEIGHT=56
 
+SKYSPRITE=pygame.image.load(os.path.join('assets',"sky.png"))
+SKYWIDTH=400
+BUSHSPRITE=pygame.image.load(os.path.join('assets',"bushes.png"))
+BUSHWIDTH=400
+
 GROUNDSPRITE=pygame.image.load(os.path.join('assets','ground.jpeg'))
 GROUNDWIDTH=442
 GROUNDHEIGHT=32

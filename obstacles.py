@@ -143,6 +143,8 @@ for hse in LAYER2OBS:
 
 speed1=5
 speed2=4
+speed3=3
+speed4=1
 diff=3
 
 def spawn(screen):

@@ -19,6 +19,8 @@ hitbox=True
 downclicked=False
 
 Ground=pygame.Rect(0,HEIGHT-sprites.GROUNDHEIGHT,sprites.GROUNDWIDTH,sprites.GROUNDHEIGHT)
+skyx=0
+bushx=0
 obstaclearray=[]
 
 #=======================MENU===============================
@@ -78,7 +80,17 @@ def collisioncheck():
         rectbelow()
 
 def drawgame():
-    SCREEN.fill((255,255,255))
+    global skyx,bushx
+    SCREEN.blit(sprites.SKYSPRITE,(skyx,0))
+    SCREEN.blit(sprites.SKYSPRITE,(skyx+sprites.SKYWIDTH,0))
+    if skyx<-sprites.SKYWIDTH:
+        skyx=0
+    else: skyx-=obstacles.speed4
+    SCREEN.blit(sprites.BUSHSPRITE,(bushx,Ground.x-sprites.GROUNDHEIGHT))
+    SCREEN.blit(sprites.BUSHSPRITE,(bushx+sprites.BUSHWIDTH,Ground.x-sprites.GROUNDHEIGHT))
+    if bushx<-sprites.SKYWIDTH:
+        bushx=0
+    else: bushx-=obstacles.speed3
     SCREEN.blit(sprites.GROUNDSPRITE,(Ground.x,Ground.y))
     obstacles.update(SCREEN)
     if hitbox==True:
