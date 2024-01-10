@@ -13,13 +13,13 @@ LAYER3=90   #ROOF
 onscreen=[] #obstacles objects visible onscreen
 
 timer=0.0
-lastspawntime=0.0
+lastspawntime=0.0   #time when last obstacle spawned
 
 windowx2=270
 windowx1=60
 windowy=105
 
-hitbox=True
+hitbox:bool
 hitboxcolour="red"
 
 class house:
@@ -33,8 +33,13 @@ class house:
         self.rect2=pygame.Rect(WIDTH+270,175,173,1)
         self.roof=pygame.Rect(WIDTH,84,sprites.HOUSEWIDTH,13)
         self.y=12
-        self.cat=pygame.Rect(self.x+325,self.y+125,sprites.ANGRYCATWIDTH,sprites.ANGRYCATHEIGHT)
-    def randomize(self):
+        self.cat=pygame.Rect(
+            self.x+325,
+            self.y+125,
+            sprites.ANGRYCATWIDTH,
+            sprites.ANGRYCATHEIGHT
+            )
+    def randomize(self):      #randomizes window placement and if cat will be sitting on wall or not
         match random.randint(1,4):
             case 1:
                 self.leftwsprite=sprites.WINDOWOPENSPRITE
@@ -57,30 +62,36 @@ class house:
         self.cathere=cathere
     def update(self,screen):
         global onscreen
+
         if self.cathere:
             self.cat.x-=speed2
         self.x-=speed2
         self.rect1.x-=speed2
         self.rect2.x-=speed2
         self.roof.x-=speed2
+
         screen.blit(sprites.HOUSESPRITE,(self.x,self.y))
         screen.blit(self.leftwsprite,(self.x+windowx1,self.y+windowy))
         screen.blit(self.rightwsprite,(self.x+windowx2,self.y+windowy))
+
         if self.cathere==True:
             if hitbox==True:
                 screen.fill(hitboxcolour,self.cat)
             screen.blit(sprites.ANGRYCATSPRITE,(self.cat.x,self.cat.y))
+
         if self.x+sprites.HOUSEWIDTH<0:
             onscreen.pop(onscreen.index(self))
             self.reset(screen)
+
     def reset(self,screen):
         self.cat.x=WIDTH+325
         self.roof.x=WIDTH
         self.rect1.x=WIDTH
         self.rect2.x=WIDTH+270
-        self.randomize()
         self.x=WIDTH
         self.y=12
+
+        self.randomize()
         screen.blit(self.sprite,(self.x,self.y))
 
 class obstacle:
@@ -141,11 +152,10 @@ for hse in LAYER2OBS:
     standablerect.append(hse.rect1)
     standablerect.append(hse.rect2)
 
-speed1=5
-speed2=4
-speed3=3
-speed4=1
-diff=3
+speed1=4    #Speed of obsctacles
+speed2=3    #Speed of house 
+speed3=2    #Speed of bg bushes
+speed4=0    #Speed of bg sky and mountains
 
 def spawn(screen):
     layerlist=LAYER1OBS
@@ -168,9 +178,8 @@ def restart(screen):
 def update(SCREEN):
     global lastspawntime,timer
     timer=pygame.time.get_ticks()
-    if len(onscreen)<diff:
-        if timer-lastspawntime>1000.0:
-            lastspawntime=timer
-            spawn(SCREEN)
+    if timer-lastspawntime>1000.0:
+        lastspawntime=timer
+        spawn(SCREEN)
     for obj in onscreen:
         obj.update(SCREEN)

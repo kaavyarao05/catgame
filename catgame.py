@@ -7,15 +7,17 @@ HEIGHT=300
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 pygame.display.set_caption("Catgame")
+pygame.display.set_icon(sprites.CATSPRITE2)
 FPS=60
 curscreen="menu"
 
 points=0
 pointsinterval=250  #time interval to update points in milliseconds
-lastpointinterval=0
-downclickinterval=0
+lastpointinterval=0  #time at which points was last updated
+downclickinterval=0  #time at which down was last clicked
 
-hitbox=True
+hitbox=False
+obstacles.hitbox=hitbox
 downclicked=False
 
 Ground=pygame.Rect(0,HEIGHT-sprites.GROUNDHEIGHT,sprites.GROUNDWIDTH,sprites.GROUNDHEIGHT)
@@ -29,8 +31,6 @@ user_text = ''
 INPUT_RECT = pygame.Rect(20, 80, 140, 32) 
 #=========================================================
 
-
-
 #==========================CAT===========================
 CATFRAMES=[
     sprites.CATSPRITE1,
@@ -42,8 +42,8 @@ CATFRAMES=[
     sprites.CATSPRITE7
 ]
 Cat=pygame.Rect(50,50,sprites.CATWIDTH-30,sprites.CATHEIGHT-30)
-curcatframe=CATFRAMES[0]
 catframeindex=0
+curcatframe=CATFRAMES[catframeindex]
 catstate="run"
 
 catgravity=0
@@ -62,8 +62,10 @@ def catanimate():
             if catframeindex>6:
                 catframeindex=0.0
             curcatframe=CATFRAMES[int(catframeindex)]
+            pygame.display.set_icon(curcatframe)  #updates icon
         case "jump":
             curcatframe=CATFRAMES[0]
+            pygame.display.set_icon(curcatframe) #updates icon
 
 def rectbelow():
     global catstate,catgravity
@@ -81,36 +83,51 @@ def collisioncheck():
 
 def drawgame():
     global skyx,bushx
+
+    #sky
     SCREEN.blit(sprites.SKYSPRITE,(skyx,0))
     SCREEN.blit(sprites.SKYSPRITE,(skyx+sprites.SKYWIDTH,0))
     if skyx<-sprites.SKYWIDTH:
         skyx=0
     else: skyx-=obstacles.speed4
+
+    #bushes
     SCREEN.blit(sprites.BUSHSPRITE,(bushx,Ground.x-sprites.GROUNDHEIGHT))
     SCREEN.blit(sprites.BUSHSPRITE,(bushx+sprites.BUSHWIDTH,Ground.x-sprites.GROUNDHEIGHT))
     if bushx<-sprites.SKYWIDTH:
         bushx=0
     else: bushx-=obstacles.speed3
+
+    #ground
     SCREEN.blit(sprites.GROUNDSPRITE,(Ground.x,Ground.y))
+
     obstacles.update(SCREEN)
+    
     if hitbox==True:
         SCREEN.fill("green",Cat)
-    catanimate()
-    collisioncheck()
+
+    #cat
     SCREEN.blit(curcatframe,(Cat.x-15,Cat.y-30))
+
+    #points
     if user_text=="":
         finaltext=str(points)
     else:
         finaltext=user_text+" : "+str(points)
     text_surface = BASE_FONT.render(finaltext, False, (0,0,0)) 
     SCREEN.blit(text_surface, (5, 5)) 
+
     pygame.display.update()
 
 def game():
     global catgravity,catstate,curscreen,points,lastpointinterval,downclicked,downclickinterval
     timer=pygame.time.get_ticks()
     clock.tick(FPS)
+
     drawgame()
+    catanimate()
+    collisioncheck()
+
     for event in pygame.event.get():  
         if event.type==pygame.KEYDOWN:
             if (event.key==pygame.K_SPACE or event.key==pygame.K_UP) and catstate!="jump":
@@ -124,14 +141,18 @@ def game():
             pyquit()
     
     if downclicked:
-        if timer-downclickinterval>250:
+        if timer-downclickinterval>150:
             downclicked=False
-    
 
     if timer-lastpointinterval>pointsinterval:
         lastpointinterval=timer
+        if points%50==0:
+            obstacles.speed1+=1
+            obstacles.speed2+=1
+            obstacles.speed3+=1
+            obstacles.speed4+=1
         points+=1
-
+        
     catgravity+=0.3
     Cat.y+=catgravity
 
@@ -172,21 +193,29 @@ def restart():
     obstacles.restart(SCREEN)
     points=0
     Cat.y=Ground.y+1
+    obstacles.speed1=4
+    obstacles.speed2=3
+    obstacles.speed3=2
+    obstacles.speed4=0
 
 def lose():
     global curscreen
     if user_text!="":
         sqlconn.update(user_text,points)
-    SCREEN.blit(sprites.LOSESPRITE,(-20,-50))
+    SCREEN.blit(sprites.LOSESPRITE,(-20,-50))  #bg
+
     enter=BASE_FONT.render("[ENTER]: Retry",False,(255,255,255))
     space=BASE_FONT.render("[SPACE]: Leaderboard",False,(255,255,255))
     lose=BASE_FONT.render("YOU LOSE",False,(255,255,255))
     total=BASE_FONT.render("TOTAL: "+str(points),False,(255,255,255))
+
     SCREEN.blit(lose,(WIDTH/4-60,10))
     SCREEN.blit(total,(WIDTH/4-50,50))
     SCREEN.blit(enter,(WIDTH/4-80,80))
     SCREEN.blit(space,(WIDTH/4-80,110))
+
     pygame.display.update()
+
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pyquit()
@@ -200,12 +229,14 @@ def lose():
 
 def leaderboard():
     clock.tick(FPS)
+
     onetext=BASE_FONT.render((sqlconn.output[0][0]),False,(78,105,111))
     twotext=BASE_FONT.render((sqlconn.output[1][0]),False,(78,105,111))
     threetext=BASE_FONT.render((sqlconn.output[2][0]),False,(78,105,111))
     onescore=BASE_FONT.render(str(sqlconn.output[0][1]),False,(78,105,111))
     twoscore=BASE_FONT.render(str(sqlconn.output[1][1]),False,(78,105,111))
     threescore=BASE_FONT.render(str(sqlconn.output[2][1]),False,(78,105,111))
+
     SCREEN.blit(sprites.LEADERBOARDSPRITE,(0,0))
     SCREEN.blit(onetext,(125,85))
     SCREEN.blit(twotext,(125,165))
@@ -213,6 +244,7 @@ def leaderboard():
     SCREEN.blit(onescore,(275,85))
     SCREEN.blit(twoscore,(275,165))
     SCREEN.blit(threescore,(275,245))
+
     pygame.display.update()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:

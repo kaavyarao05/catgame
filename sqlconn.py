@@ -3,14 +3,10 @@ import sqlite3
 conn=sqlite3.connect('leaderboard.db')
 cursor=conn.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS leaderboard (username VARCHAR(10),score INT);")
-cursor.execute("DELETE FROM leaderboard;")
-cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
-cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
-cursor.execute('''INSERT INTO leaderboard (username,score) VALUES ('',0);''')
 conn.commit()
 conn.close()
 
-output=[("",0),("",0),("",0)]
+output:list
 
 def update(name,points):
     conn=sqlite3.connect('leaderboard.db')
